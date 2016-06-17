@@ -62,7 +62,8 @@ class WeatherTest extends FlatSpec with Matchers {
     val readingsRepeated1 = weathers.flatMap(weather => weather.ofStation(station))
     readings should equal(readingsRepeated1)
 
-    val readingsRepeated2 = weathers.flatMap(weather => weather.ofStation(station))
+    val weathers2 = Weather.ofGrid(grid).toStream(timeInterval).take(iterations.toInt)
+    val readingsRepeated2 = weathers2.flatMap(weather => weather.ofStation(station))
     readings should equal(readingsRepeated2)
   }
 
