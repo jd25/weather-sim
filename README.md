@@ -30,6 +30,20 @@ mock relationships/feedback for demo purposes.
 
 Weather consists of a Grid and GridHistory.
 Grid contains Cells, and the GridHistory contains Seq[Cells].
+A call to Grid.uniform will create a 2-d array of basic Cells and that can be customised (initial conditions).
+Example usage:
+
+```scala
+Grid.uniform(top, left, bottom, right, cellsOnLongSide = 100, startTime)
+  .map(DefaultBehaviour.applyTopography).map { grid =>
+    for {
+      weather <- Weather.ofGrid(grid).toStream(timeInterval).take(numIterations)
+      reading <- weather.ofStation(weatherStation)
+    } yield {
+      reading.temperature
+    }
+  }
+```
 
 There are IATACodes, from which a WeatherStation can be made.
 Weather can be accessed via the Grid, with WeatherStations as an alternative to latitude/longitude indexing.

@@ -65,6 +65,19 @@ class WeatherTest extends FlatSpec with Matchers {
     val weathers2 = Weather.ofGrid(grid).toStream(timeInterval).take(iterations.toInt)
     val readingsRepeated2 = weathers2.flatMap(weather => weather.ofStation(station))
     readings should equal(readingsRepeated2)
+
+    // documentation syntax check
+    val temps: Option[Stream[squants.thermal.Temperature]] =
+      Grid.uniform(top, left, bottom, right, cellsOnLongSide = 100, time)
+        .map(DefaultBehaviour.applyTopography).map { grid =>
+          for {
+            weather <- Weather.ofGrid(grid).toStream(timeInterval).take(iterations)
+            reading <- weather.ofStation(station)
+          } yield {
+            reading.temperature
+          }
+        }
+    temps should not be empty
   }
 
 } // end of WeatherTest
