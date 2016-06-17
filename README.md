@@ -26,7 +26,7 @@ the Demo emits some missing, duplicated and corrupted values to simulate vagary 
 
 This toy model API intends to be flexible to allow for the implementation of
 meteorological phenomena, but the default implementation is merely some crude
-mock relationships for demo purposes.
+mock relationships/feedback for demo purposes.
 
 Weather consists of a Grid and GridHistory.
 Grid contains Cells, and the GridHistory contains Seq[Cells].
