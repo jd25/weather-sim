@@ -1,10 +1,15 @@
 package weather.models
 
+import java.time.Duration
+
 import org.scalatest._
 
 import org.scalacheck.Properties
 
+import squants.space.Degrees
+
 import weather.models.DefaultBehaviour._
+import weather.units.Angles._
 
 class WeatherTest extends FlatSpec with Matchers {
 
@@ -17,6 +22,42 @@ class WeatherTest extends FlatSpec with Matchers {
     weather1.grid should be(grid1.get)
     weather1.history.cells.map(_.map(_.head)) should equal(grid1.get.cells)
 
+  }
+
+  /** @todo set up proper integration tests. */
+  "Weather and DefaultBehaviour" should "produce some sane results for 7 days with" in {
+    val station = new weather.stations.WeatherStationTest().PER.get
+    val spread = Degrees(20)
+    val top = Latitude(station.iataCode.latitude.angle + spread)
+    val bottom = Latitude(station.iataCode.latitude.angle - spread)
+    val left = Longitude(station.iataCode.longitude.angle - spread)
+    val right = Longitude(station.iataCode.longitude.angle + spread)
+    val simulationDuration = Duration.ofDays(7)
+    val timeInterval = Duration.ofHours(24 / 4)
+    val iterations = (simulationDuration.getSeconds / timeInterval.getSeconds).toInt
+    val time = java.time.ZonedDateTime.of(2016, 6, 15, 12, 30, 30, 0, java.time.ZoneId.of("Australia/Perth"))
+    val grid = Grid.uniform(top, left, bottom, right, cellsOnLongSide = 100, time)
+      .map(DefaultBehaviour.applyTopography).get
+    val weathers = Weather.ofGrid(grid).toStream(timeInterval).take(iterations.toInt)
+    val readings = weathers.flatMap(weather => weather.ofStation(station))
+
+    readings.size should be(iterations)
+
+    val temperatures = readings.map(_.temperature.toCelsiusDegrees)
+    val pressures = readings.map(_.pressure.toPascals)
+    val humidities = readings.map(_.humidity)
+
+    temperatures.toSet.size should be > (iterations / 2)
+    temperatures.min should be >= (-40.0)
+    temperatures.max should be <= (50.0)
+
+    pressures.toSet.size should be > (iterations / 2)
+    pressures.min should be >= (50000.0)
+    pressures.max should be <= (150000.0)
+
+    humidities.toSet.size should be > (iterations / 2)
+    humidities.min should be >= (0)
+    humidities.max should be <= (100)
   }
 
 } // end of WeatherTest
