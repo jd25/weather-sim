@@ -25,7 +25,7 @@ class WeatherTest extends FlatSpec with Matchers {
   }
 
   /** @todo set up proper integration tests. */
-  "Weather and DefaultBehaviour" should "produce some sane results for 7 days with" in {
+  "Weather and DefaultBehaviour" should "produce some sane deterministic results for 7 days" in {
     val station = new weather.stations.WeatherStationTest().PER.get
     val spread = Degrees(20)
     val top = Latitude(station.iataCode.latitude.angle + spread)
@@ -58,6 +58,12 @@ class WeatherTest extends FlatSpec with Matchers {
     humidities.toSet.size should be > (iterations / 2)
     humidities.min should be >= (0)
     humidities.max should be <= (100)
+
+    val readingsRepeated1 = weathers.flatMap(weather => weather.ofStation(station))
+    readings should equal(readingsRepeated1)
+
+    val readingsRepeated2 = weathers.flatMap(weather => weather.ofStation(station))
+    readings should equal(readingsRepeated2)
   }
 
 } // end of WeatherTest

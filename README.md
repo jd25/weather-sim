@@ -4,9 +4,9 @@ To run a demo simulation and create fresh output with default parameters:
 
 `sbt "run output.txt"`
 
-A sample.txt is already provided in this repository.
+A convenience and comparison, `sample.txt` is already provided in this repository.
 
-To run unit test in Scala:
+To run unit tests in Scala:
 
 `sbt test`
 
@@ -17,14 +17,14 @@ To generate ScalaDoc:
 ## Demo
 
 Demo.scala writes a text file (pipe-delimited columns) for 7 simulated days of 10 predefined stations.
-The weather is incremented 4 times a day (approx 6 hours intervals, with jitter).
-The jitter gives a feeling of ‘randomness’ to the simulation.
+The weather is incremented 4 times a day (approx 6-hour intervals, with jitter).
+The jitter in the demo runner gives a feeling of ‘randomness’ to the simulation although the model is deterministic.
 Each station is reported an average 2.2 times each day:
-the Demo emits some missing, duplicated and corrupted values to simulate vagary of real data.
+the Demo simulates missing and duplicated values as vagaries of real data.
 
 ## Internal API
 
-This toy model API intends to be flexible to allow for the implementation of
+This toy model’s API intends to be flexible to for the implementation of
 meteorological phenomena, but the default implementation is merely some crude
 mock relationships/feedback for demo purposes.
 
@@ -96,7 +96,7 @@ The model environmental generates the (inter)dependent factors of the model weat
 Both independent and dependent factors must be seeded with initial conditions.
 Defaults are provided in DefaultBehaviour and Cell, but you can use your own.
 
-(Currently the simulation gets divergently inaccurate the longer it runs after the initial conditions.)
+(Currently the simulation may exhibit runaway divergence the longer it runs after the initial conditions.)
 
 # Code style
 
