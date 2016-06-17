@@ -2,7 +2,7 @@
 
 To run a demo simulation and create fresh output with default parameters:
 
-`sbt run output.txt`
+`sbt "run output.txt"`
 
 A sample.txt is already provided in this repository.
 
