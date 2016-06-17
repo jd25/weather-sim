@@ -29,7 +29,7 @@ object Simulator {
     val step = weather.grid.cells.map(_.map(independentLogic))
 
     val dependentLogic = applyDependentLogic(weather.dependentLogic, interval) _
-    val cells = step.map(_.map(dependentLogic(_, GridHistory.empty/*@todo*/, Grid(step))))
+    val cells = step.map(_.map(dependentLogic(_, GridHistory.empty /*@todo*/ , Grid(step))))
 
     weather.copy(grid = Grid(cells))
   }
